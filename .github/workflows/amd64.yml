@@ -47,7 +47,7 @@ jobs:
           done
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: my-artifact
         path: ${{ github.workspace }}/*.tar.gz
@@ -57,7 +57,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        gh release create auto-build --draft --title "Latest Image Tarball" --notes "Auto-updated by workflow" -R ${{ github.repository }} || true 
+        gh release create auto-build --draft --title "Latest Image Tarball" --notes "Auto-updated by workflow" --generate-notes false -R ${{ github.repository }} || true 
         for tarfile in ./*-amd64.tar.gz; do
           gh release upload auto-build "$tarfile" --clobber -R ${{ github.repository }} 
         done
