@@ -52,22 +52,14 @@ jobs:
         path: ${{ github.workspace }}/*.tar.gz
         retention-days: 1  # 将保留天数设置为 1 天 最多可设置90天
 
-    - name: Delete old assets inside Release （auto-build）, keep release/tag itself
-      uses: georgezouq/delete-release-assets@v1
-      if: success()
-      with:
-        tag_name: auto-build
+    - name: Upload to fix release tag(auto-build), overwrite same-name file
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    
-    - name: Upload new tar.gz assets to same release
-      uses: softprops/action-gh-release@v2
-      if: success()
-      with:
-        files: |
-          *.tar.gz
-        tag_name: auto-build
-        name: Auto Built docker images
-        generate_release_notes:
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        gh release create auto-build --draft --title "Latest Image Tarball" --notes "Auto-updated by workflow" || true
+        for tarfile in ./*-amd64.tar.gz; do
+          gh release upload auto-build "$tarfile" --clobber
+        done
+        if gh release view auto-build --json isDraft | jq -r '.isDraft' | grep -q true; then
+          gh release edit auto-build --draft=false
+        fi
