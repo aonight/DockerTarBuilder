@@ -38,6 +38,7 @@ jobs:
             image_name="${image//\//_}"
             image_name="${image_name//:/_}"
             docker save "${image}" | gzip > "${image_name}-amd64.tar.gz"
+            docker rmi "${image}"
           done
 
     - name: Upload artifact
