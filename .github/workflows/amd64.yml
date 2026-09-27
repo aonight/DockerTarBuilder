@@ -10,7 +10,9 @@ on:
 jobs:
   pull_and_package:
     runs-on: ubuntu-22.04
-
+    permissions:
+      contents: write
+    
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -47,3 +49,23 @@ jobs:
         name: my-artifact
         path: ${{ github.workspace }}/*.tar.gz
         retention-days: 1  # 将保留天数设置为 1 天 最多可设置90天
+
+    - name: Delete old assets inside Release （auto-build）, keep release/tag itself
+      uses: georgezouq/delete-release-assets@v1
+      if: success()
+      with:
+        tag_name: auto-build
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Upload new tar.gz assets to same release
+      uses: softprops/action-gh-release@v2
+      if: success()
+      with:
+        files: |
+          *.tar.gz
+        tag_name: auto-build
+        name: Auto Built docker images
+        generate_release_notes:
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
