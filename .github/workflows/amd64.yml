@@ -56,10 +56,10 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        gh release create auto-build --draft --title "Latest Image Tarball" --notes "Auto-updated by workflow" || true
+        gh release create auto-build --draft --title "Latest Image Tarball" --notes "Auto-updated by workflow" -R ${{ github.repository }} || true 
         for tarfile in ./*-amd64.tar.gz; do
-          gh release upload auto-build "$tarfile" --clobber
+          gh release upload auto-build "$tarfile" --clobber -R ${{ github.repository }} 
         done
-        if gh release view auto-build --json isDraft | jq -r '.isDraft' | grep -q true; then
-          gh release edit auto-build --draft=false
+        if gh release view auto-build --json isDraft -R ${{ github.repository }} | jq -r '.isDraft' | grep -q true; then
+          gh release edit auto-build --draft=false -R ${{ github.repository }} 
         fi
