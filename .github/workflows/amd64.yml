@@ -17,16 +17,17 @@ jobs:
     
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       
     - name: Maximize build space
       uses: easimon/maximize-build-space@master
       with:
-        remove-android: 'true'
-        remove-haskell: 'true'
-        remove-dotnet: 'true'
-        remove-visual-studio: 'true'
-        overprovision-lvm: 'true'
+        root-reserve-mb: 512
+        remove-android: true
+        remove-haskell: true
+        remove-dotnet: true
+        remove-codeql: true
+        overprovision-lvm: true
       
     - name: Clean up Docker to free space
       run: |
@@ -46,7 +47,7 @@ jobs:
           done
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: my-artifact
         path: ${{ github.workspace }}/*.tar.gz
