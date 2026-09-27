@@ -21,7 +21,7 @@ jobs:
         remove-android: 'true'
         remove-haskell: 'true'
         remove-dotnet: 'true'
-        remove-visualstudio: 'true'
+        remove-visual-studio: 'true'
         overprovision-lvm: 'true'
       
     - name: Clean up Docker to free space
