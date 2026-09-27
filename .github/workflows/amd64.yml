@@ -38,6 +38,9 @@ jobs:
     - name: Pull Docker Images and Package
       run: |
         images="${{ github.event.inputs.docker_images }}"
+        if [[ -z "$images" ]]; then
+          images = 'homeassistant/home-assistant:latest,adguard/adguardhome:latest,lscr.io/linuxserver/jellyfin:latest'
+        fi
           IFS=',' read -r -a image_array <<< "$images"
           for image in "${image_array[@]}"; do
             docker pull "${image}" --platform "linux/amd64"
@@ -47,13 +50,14 @@ jobs:
             docker rmi "${image}"
           done
 
-    - name: Upload artifact
-      uses: actions/upload-artifact@v6
-      with:
-        name: my-artifact
-        path: ${{ github.workspace }}/*.tar.gz
-        retention-days: 1  # 将保留天数设置为 1 天 最多可设置90天
-
+    - name: Debug print folder
+      run: |
+        pwd
+        ls -la ./
+        ls -la .//
+        echo "images变量的值=【$images]"
+        echo "数组长度: ${#image_array[@]}"
+      
     - name: Upload to fix release tag(auto-build), overwrite same-name file
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
