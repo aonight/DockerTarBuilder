@@ -1,7 +1,7 @@
 name: x86-64 Pull and Save Docker Image
 on:
   schedule:
-    - cron: '0 21 * * *'
+    - cron: '0 3 * * *'
   workflow_dispatch:
     inputs:
       docker_images:
@@ -39,7 +39,7 @@ jobs:
       run: |
         images="${{ github.event.inputs.docker_images }}"
         if [[ -z "$images" ]]; then
-          images = 'homeassistant/home-assistant:latest,adguard/adguardhome:latest,lscr.io/linuxserver/jellyfin:latest'
+          images='homeassistant/home-assistant:latest,adguard/adguardhome:latest,lscr.io/linuxserver/jellyfin:latest'
         fi
           IFS=',' read -r -a image_array <<< "$images"
           for image in "${image_array[@]}"; do
