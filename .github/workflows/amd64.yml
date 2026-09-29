@@ -1,7 +1,7 @@
 name: x86-64 Pull and Save Docker Image
 on:
   schedule:
-    - cron: '0 3 * * *'
+    - cron: '0 3 * * 4'
   workflow_dispatch:
     inputs:
       docker_images:
